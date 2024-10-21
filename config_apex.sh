@@ -40,11 +40,11 @@ done
 # #############################################################################
 # Update database SYS password and APEX admin password 
 # #############################################################################
-# 1st argument is for database SYS password.
+# 1st argument is database SYS password.
 if [ $# -ge 1 ]; then
   echo ${1} > password.txt
 fi
-# 2nd argument is for APEX Admin password.
+# 2nd argument is APEX Admin password.
 ADMIN_PASSWORD="Welcome_1";
 if [ $# -ge 2 ]; then
   ADMIN_PASSWORD=${2}
@@ -91,13 +91,18 @@ podman exec -i apex-db /home/oracle/setPassword.sh ${password}
 # Install Oracle APEX
 # #############################################################################
 #
-cp install_apex_pod.sql apex/install_apex_pod.sql
+cp config_apex_pod.sql apex/config_apex_pod.sql
 cd apex
+# PLEASE Modify: Language resource JAPANESE is installed 
 sql sys/${password}@localhost/freepdb1 as sysdba <<EOF
-@install_apex_pod ${ADMIN_PASSWORD} ${APEX_VERSION} ${APEX_SCHEMA}
--- PLEASE Modify: Language resource JAPANESE to be installed 
+@apexins SYSAUX SYSAUX TEMP /i/
 @load_trans JAPANESE
+alter user apex_public_user account unlock no authentication;
 EOF
+
+sql sys/${password}@localhost/freepdb1 as sysdba \
+@config_apex_pod ${ADMIN_PASSWORD} ${APEX_VERSION} ${APEX_SCHEMA}
+
 cd ..
 
 # #############################################################################
