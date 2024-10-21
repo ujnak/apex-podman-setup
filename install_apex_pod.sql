@@ -12,13 +12,6 @@
 -- @apexins SYSAUX SYSAUX TEMP /i/24.1.0/
 
 -- --------------------------------------------------------------------
--- Load additional language resources.
---   REQUIRED ACTION:
---     Include or exclude languages resources.
--- --------------------------------------------------------------------
-@load_trans JAPANESE
-
--- --------------------------------------------------------------------
 -- Create APEX administration account.
 --   REQUIRED ACTION:
 --     Update p_username and p_password.
@@ -70,5 +63,3 @@ end;
 -- --------------------------------------------------------------------
 alter user apex_public_user account unlock no authentication;
 
--- --------------------------------------------------------------------
-exit;

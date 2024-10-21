@@ -95,6 +95,8 @@ cp install_apex_pod.sql apex/install_apex_pod.sql
 cd apex
 sql sys/${password}@localhost/freepdb1 as sysdba <<EOF
 @install_apex_pod ${ADMIN_PASSWORD} ${APEX_VERSION} ${APEX_SCHEMA}
+-- PLEASE Modify: Language resource JAPANESE to be installed 
+@load_trans JAPANESE
 EOF
 cd ..
 
