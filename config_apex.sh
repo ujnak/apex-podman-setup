@@ -11,7 +11,9 @@
 # 5. Write database sys password in password.txt
 #
 
-# verify pre-requisit.
+# #############################################################################
+# Verify pre-requisit.
+#
 # Confirm SQLcl - sql is exists.
 which sql
 if [ $? -ne 0 ]; then
@@ -29,7 +31,20 @@ do
   fi
 done
 
+# #############################################################################
+# Update sys password and APEX admin password 
+#
+ADMIN_PASSWORD="Welcome_1";
+if [ $# -eq 1 ]; then
+  echo ${1} > password.txt
+elif [ $# -ge 2 ]; then
+  echo ${1} > passowrd.txt
+  ADMIN_PASSWORD=${2}
+fi
+
+# #############################################################################
 # Replace Oracle APEX with latest archive.
+#
 rm -rf apex META-INF
 curl -OL https://download.oracle.com/otn_software/apex/apex-latest.zip
 unzip apex-latest.zip > /dev/null
@@ -46,12 +61,14 @@ APEX_SCHEMA=APEX_${apex_major}0${apex_minor}00
 echo "APEX VERSION detected: " ${APEX_VERSION} ${APEX_SCHEMA}
 
 # Replace APEX_VERSION and APEX_SCHEMA
-sed -e "s/#APEX_VERSION#/${APEX_VERSION}/" install_apex_pod.sql > install_apex_pod.sql.t
-sed -e "s/#APEX_SCHEMA#/${APEX_SCHEMA}/" install_apex_pod.sql.t > apex/install_apex_pod.sql
-#rm install_apex_pod.sql.t
+sed -e "s/#ADMIN_PASSWORD#/${ADMIN_PASSWORD}/" install_apex_pod.sql > install_apex_pod.sql.t0
+sed -e "s/#APEX_VERSION#/${APEX_VERSION}/" install_apex_pod.sql.t0 > install_apex_pod.sql.t1
+sed -e "s/#APEX_SCHEMA#/${APEX_SCHEMA}/" install_apex_pod.sql.t1 > apex/install_apex_pod.sql
+rm install_apex_pod.sql.t0 install_apex_pod.sql.t1
 
-# 
-
+# #############################################################################
+# Create Pod
+#
 password=`cat password.txt`
 
 # Prepare podman volumes
@@ -63,19 +80,26 @@ podman kube play apex.yaml
 sleep 10
 podman exec -i apex-db /home/oracle/setPassword.sh ${password}
 
-# install apex
+# #############################################################################
+# Install apex
+#
 cd apex
 sql sys/${password}@localhost/freepdb1 as sysdba <<EOF
 @install_apex_pod
 EOF
-
 cd ..
+
+# #############################################################################
 # configure ORDS
+#
 podman stop apex-ords
 podman run --pod apex --rm -i -v ords_config:/etc/ords/config container-registry.oracle.com/database/ords:latest install --admin-user sys --db-hostname localhost --db-port 1521 --db-servicename freepdb1 --log-folder /tmp/logs --feature-sdw true <<EOF
 ${password}
 EOF
 
+# #############################################################################
+# Restart POD
+#
 podman pod stop apex
 podman pod start apex
 

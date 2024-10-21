@@ -27,7 +27,7 @@ begin
     apex_instance_admin.create_or_update_admin_user(
         p_username => 'ADMIN',
         p_email    => null,
-        p_password => 'Welcome_1'
+        p_password => '#ADMIN_PASSWORD#'
     );
     commit;
 end;
