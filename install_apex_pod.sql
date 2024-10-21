@@ -41,7 +41,7 @@ end;
 begin
     apex_instance_admin.set_parameter(
         p_parameter => 'IMAGE_PREFIX',
-        p_value => 'https://static.oracle.com/cdn/apex/24.1.0/'
+        p_value => 'https://static.oracle.com/cdn/apex/#APEX_VERSION#/'
     );
     commit;
     end;
@@ -57,7 +57,7 @@ begin
         host => '*',
         ace => xs$ace_type(
             privilege_list => xs$name_list('connect'),
-            principal_name => 'APEX_240100',
+            principal_name => '#APEX_SCHEMA#',
             principal_type => xs_acl.ptype_db
         )
      );
