@@ -112,6 +112,10 @@ container-registry.oracle.com/database/ords:latest install \
 ${password}
 EOF
 
+podman run --pod apex --rm -v ords_config:/etc/ords/config \
+container-registry.oracle.com/database/ords:latest \
+config set standalone.http.port 8181
+
 # #############################################################################
 # Restart Pod APEX
 # #############################################################################

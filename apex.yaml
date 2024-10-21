@@ -16,8 +16,8 @@ spec:
     ports:
     - containerPort: 1521
       hostPort: 1521
-    - containerPort: 8080
-      hostPort: 8080
+    - containerPort: 8181
+      hostPort: 8181
     - containerPort: 8443
       hostPort: 8443
     securityContext: {}
