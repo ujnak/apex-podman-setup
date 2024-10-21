@@ -1,7 +1,7 @@
 #!/bin/sh
 # ############################################################################
-# 
 # Script to configure Oracle APEX environment with podman.
+# ############################################################################
 # 
 # Verified on macOS Sonoma and Sequoia
 # podman 5.2.4
@@ -18,7 +18,7 @@
 #
 
 # #############################################################################
-# Verify pre-requisit.
+# Verify pre-requisits.
 # #############################################################################
 # Confirm SQLcl - sql is available.
 which sql
@@ -38,7 +38,7 @@ do
 done
 
 # #############################################################################
-# Update sys password and APEX admin password 
+# Update database SYS password and APEX admin password 
 # #############################################################################
 # 1st argument is for database SYS password.
 if [ $# -ge 1 ]; then
@@ -51,7 +51,7 @@ if [ $# -ge 2 ]; then
 fi
 
 # #############################################################################
-# Replace Oracle APEX with latest archive.
+# Replace Oracle APEX by the latest archive.
 # #############################################################################
 #
 rm -rf apex META-INF
@@ -73,7 +73,7 @@ APEX_SCHEMA=APEX_${apex_major}0${apex_minor}00
 echo "APEX VERSION detected: " ${APEX_VERSION} ${APEX_SCHEMA}
 
 # #############################################################################
-# Create Pod
+# Create Pod APEX with Oracle Database Free and ORDS containers
 # #############################################################################
 #
 password=`cat password.txt`
