@@ -38,7 +38,7 @@ ADMIN_PASSWORD="Welcome_1";
 if [ $# -eq 1 ]; then
   echo ${1} > password.txt
 elif [ $# -ge 2 ]; then
-  echo ${1} > passowrd.txt
+  echo ${1} > password.txt
   ADMIN_PASSWORD=${2}
 fi
 
