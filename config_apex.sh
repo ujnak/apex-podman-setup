@@ -3,14 +3,14 @@
 # Script to configure Oracle APEX environment with podman.
 # ############################################################################
 # 
-# Verified on macOS Sonoma and Sequoia
-# podman 5.2.4
-# Oracle Databse 23ai Free Container Image. amd64 and arm64
-#   container-registry.oracle.com/database/free:latest
-# Oracle ORDS Container Image. amd64 and arm64
-#   container-registry.oracle.com/database/ords:latest
-# Oracle APEX latest zip
-#   https://download.oracle.com/otn_software/apex/apex-latest.zip
+# - macOS Sonoma and Sequoia
+# - podman 5.2.4
+# - Oracle Databse 23ai Free Container Image. amd64 and arm64
+#     container-registry.oracle.com/database/free:latest
+# - Oracle ORDS Container Image. amd64 and arm64
+#     container-registry.oracle.com/database/ords:latest
+# - Oracle APEX latest zip
+#     https://download.oracle.com/otn_software/apex/apex-latest.zip
 # 
 # Container and install images are subject to the following licenses:
 #   Oracle Free Use Terms and Conditions
@@ -20,6 +20,13 @@
 # #############################################################################
 # Verify pre-requisits.
 # #############################################################################
+# Confirm podman is available.
+which podman
+if [ $? -ne 0 ]; then
+  echo "podman is not installed or not accesible, exit";
+  exit;
+fi
+
 # Confirm SQLcl - sql is available.
 which sql
 if [ $? -ne 0 ]; then
@@ -59,7 +66,7 @@ curl -OL https://download.oracle.com/otn_software/apex/apex-latest.zip
 unzip apex-latest.zip > /dev/null
 
 # #############################################################################
-# Find APEX version and schema from apex-latest.zip
+# Find APEX version and schema of apex-latest.zip
 # #############################################################################
 # detect APEX version of apex-latest.zip
 apex_version_text=`cat apex/images/apex_version.txt`
@@ -73,7 +80,7 @@ APEX_SCHEMA=APEX_${apex_major}0${apex_minor}00
 echo "APEX VERSION detected: " ${APEX_VERSION} ${APEX_SCHEMA}
 
 # #############################################################################
-# Create Pod APEX with Oracle Database Free and ORDS containers
+# Create Pod APEX with Oracle Database Free container and ORDS container.
 # #############################################################################
 #
 password=`cat password.txt`
@@ -82,7 +89,7 @@ password=`cat password.txt`
 podman volume create oradata
 podman volume create ords_config
 
-# create pod and containers.
+# Create pod and containers.
 podman kube play apex.yaml
 sleep 10
 podman exec -i apex-db /home/oracle/setPassword.sh ${password}
@@ -100,6 +107,7 @@ sql sys/${password}@localhost/freepdb1 as sysdba <<EOF
 alter user apex_public_user account unlock no authentication;
 EOF
 
+# setup admin account, image path and network acl
 sql sys/${password}@localhost/freepdb1 as sysdba \
 @config_apex_pod ${ADMIN_PASSWORD} ${APEX_VERSION} ${APEX_SCHEMA}
 
