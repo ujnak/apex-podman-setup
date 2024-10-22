@@ -1,8 +1,9 @@
 set echo on
 
 define WKSPNAME  = &1
-define ADMINPASS = 'Welcome_1'
-define ADMINMAIL = 'noreply@oracle.com'
+define ADMINNAME = &2
+define ADMINPASS = &3
+define ADMINMAIL = &4
 
 -- create default parsing shema for worksapce apexdev.
 create user wksp_&WKSPNAME default tablespace users temporary tablespace temp quota unlimited on users;
@@ -25,7 +26,7 @@ apex_instance_admin.add_workspace(
 apex_util.set_workspace('&WKSPNAME');
 
 apex_util.create_user(
-    p_user_name                    => '&WKSPNAME',
+    p_user_name                    => '&ADMINNAME',
     p_web_password                 => '&ADMINPASS',
     p_developer_privs              => 'ADMIN:CREATE:DATA_LOADER:EDIT:HELP:MONITOR:SQL',
     p_email_address                => '&ADMINMAIL',
