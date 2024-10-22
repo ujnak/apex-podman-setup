@@ -108,8 +108,7 @@ alter user apex_public_user account unlock no authentication;
 EOF
 
 # setup admin account, image path and network acl
-sql sys/${password}@localhost/freepdb1 as sysdba \
-@config_apex_pod ${ADMIN_PASSWORD} ${APEX_VERSION} ${APEX_SCHEMA}
+sql sys/${password}@localhost/freepdb1 as sysdba @config_apex_pod ${ADMIN_PASSWORD} ${APEX_VERSION} ${APEX_SCHEMA}
 
 cd ..
 
