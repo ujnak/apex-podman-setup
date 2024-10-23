@@ -108,8 +108,8 @@ cp config_apex_pod.sql apex/config_apex_pod.sql
 cd apex
 sql sys/${password}@localhost/freepdb1 as sysdba <<EOF
 @apexins SYSAUX SYSAUX TEMP /i/
-${LOAD_TRANS}
 alter user apex_public_user account unlock no authentication;
+exit
 EOF
 
 # setup admin account, image path and network acl
@@ -119,7 +119,9 @@ sql sys/${password}@localhost/freepdb1 as sysdba @config_apex_pod ${ADMIN_PASSWO
 if [ ! -z "${INSTALL_LANGUAGES}" ]; then
 sql sys/${password}@localhost/freepdb1 as sysdba <<EOF
 @load_trans ${INSTALL_LANGUAGES}
+exit
 EOF
+fi
 
 cd ..
 
