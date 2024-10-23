@@ -104,7 +104,6 @@ podman exec -i apex-db /home/oracle/setPassword.sh ${password}
 # Install Oracle APEX
 # #############################################################################
 #
-cp config_apex_*.sql apex
 cd apex
 sql sys/${password}@localhost/freepdb1 as sysdba <<EOF
 @apexins SYSAUX SYSAUX TEMP /i/
@@ -113,19 +112,20 @@ exit
 EOF
 
 # setup admin account, image path and network acl
+cd ..
 sql sys/${password}@localhost/freepdb1 as sysdba @config_apex_admin ${ADMIN_PASSWORD}
 sql sys/${password}@localhost/freepdb1 as sysdba @config_apex_cdn ${APEX_VERSION}
 sql sys/${password}@localhost/freepdb1 as sysdba @config_apex_acl ${APEX_SCHEMA}
 
 # load language resources if specified
 if [ ! -z "${INSTALL_LANGUAGES}" ]; then
+cd apex
 sql sys/${password}@localhost/freepdb1 as sysdba <<EOF
 @load_trans ${INSTALL_LANGUAGES}
 exit
 EOF
-fi
-
 cd ..
+fi
 
 # #############################################################################
 # Configure ORDS
