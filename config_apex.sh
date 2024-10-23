@@ -113,7 +113,9 @@ exit
 EOF
 
 # setup admin account, image path and network acl
-sql sys/${password}@localhost/freepdb1 as sysdba @config_apex_pod ${ADMIN_PASSWORD} ${APEX_VERSION} ${APEX_SCHEMA}
+sql sys/${password}@localhost/freepdb1 as sysdba @config_apex_admin ${ADMIN_PASSWORD}
+sql sys/${password}@localhost/freepdb1 as sysdba @config_apex_cdn ${APEX_VERSION}
+sql sys/${password}@localhost/freepdb1 as sysdba @config_apex_acl ${APEX_SCHEMA}
 
 # load language resources if specified
 if [ ! -z "${INSTALL_LANGUAGES}" ]; then
