@@ -104,7 +104,7 @@ podman exec -i apex-db /home/oracle/setPassword.sh ${password}
 # Install Oracle APEX
 # #############################################################################
 #
-cp config_apex_pod.sql apex/config_apex_pod.sql
+cp config_apex_*.sql apex
 cd apex
 sql sys/${password}@localhost/freepdb1 as sysdba <<EOF
 @apexins SYSAUX SYSAUX TEMP /i/
