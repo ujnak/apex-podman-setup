@@ -1,5 +1,5 @@
 #!/bin/sh
-
+#
 #################################################################################
 # Connection configuration to the database.
 # no change required when the password supplied with "-e ORACLE_PWD=password"

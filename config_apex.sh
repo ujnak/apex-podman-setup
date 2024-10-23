@@ -3,6 +3,8 @@
 # Script to configure Oracle APEX environment with podman.
 # ############################################################################
 # 
+# Usage: config_apex.sh <DB SYS Password> <APEX ADMIN Password>
+#
 # - macOS Sonoma and Sequoia
 # - podman 5.2.4
 # - Oracle Databse 23ai Free Container Image. amd64 and arm64
@@ -15,7 +17,11 @@
 # Container and install images are subject to the following licenses:
 #   Oracle Free Use Terms and Conditions
 #   https://www.oracle.com/downloads/licenses/oracle-free-license.html
+#   GraalVM Free Terms and Conditions (GFTC) including License for Early Adopter Versions
+#   https://www.oracle.com/downloads/licenses/graal-free-license.html
 #
+# PLEASE Modify: Language resource JAPANESE is installed 
+LOAD_TRANS="@load_trans JAPANESE"
 
 # #############################################################################
 # Verify pre-requisits.
@@ -100,10 +106,9 @@ podman exec -i apex-db /home/oracle/setPassword.sh ${password}
 #
 cp config_apex_pod.sql apex/config_apex_pod.sql
 cd apex
-# PLEASE Modify: Language resource JAPANESE is installed 
 sql sys/${password}@localhost/freepdb1 as sysdba <<EOF
 @apexins SYSAUX SYSAUX TEMP /i/
-@load_trans JAPANESE
+${LOAD_TRANS}
 alter user apex_public_user account unlock no authentication;
 EOF
 
