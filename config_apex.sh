@@ -20,8 +20,8 @@
 #   GraalVM Free Terms and Conditions (GFTC) including License for Early Adopter Versions
 #   https://www.oracle.com/downloads/licenses/graal-free-license.html
 #
-# PLEASE Modify: Language resource JAPANESE is installed 
-LOAD_TRANS="@load_trans JAPANESE"
+# PLEASE Modify: Language resource JAPANESE is installed
+INSTALL_LANGUAGES="JAPANESE"
 
 # #############################################################################
 # Verify pre-requisits.
@@ -114,6 +114,12 @@ EOF
 
 # setup admin account, image path and network acl
 sql sys/${password}@localhost/freepdb1 as sysdba @config_apex_pod ${ADMIN_PASSWORD} ${APEX_VERSION} ${APEX_SCHEMA}
+
+# load language resources if specified
+if [ ! -z "${INSTALL_LANGUAGES}" ]; then
+sql sys/${password}@localhost/freepdb1 as sysdba <<EOF
+@load_trans ${INSTALL_LANGUAGES}
+EOF
 
 cd ..
 
