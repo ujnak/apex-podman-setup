@@ -158,6 +158,7 @@ ords --config ${ORDS_CONF_DIR} install \
 # ------------------------------------------------------------------------------
 # additonal configuration for ords
 # ------------------------------------------------------------------------------
+unset JDK_JAVA_OPTIONS
 ords --config ${ORDS_CONF_DIR} config set db.invalidPoolTimeout 5s
 ords --config ${ORDS_CONF_DIR} config set debug.printDebugToScreen true
 ords --config ${ORDS_CONF_DIR} config set restEnabledSql.active true
