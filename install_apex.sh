@@ -6,7 +6,6 @@ sleep 10
 
 # Intall Oracle APEX in the container.
 podman exec apexdb /opt/oracle/scripts/setup/01_install_apex.sh
-podman restart apexdb
 
 # #############################################################################
 # Update database SYS password and APEX admin password 
@@ -21,5 +20,7 @@ if [ $# -ge 2 ]; then
   APEXPWD=${2}
   sql sys/${SYSPWD}@localhost/freepdb1 as sysdba @config_apex_admin ${APEXPWD}
 fi
+
+podman restart apexdb
 
 exit;
