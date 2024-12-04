@@ -135,7 +135,7 @@ podman stop apex-ords
 podman run --pod apex --rm -i -v ords_config:/etc/ords/config \
 container-registry.oracle.com/database/ords:latest install \
 --admin-user sys --db-hostname localhost --db-port 1521 --db-servicename freepdb1 \
---log-folder /tmp/logs --feature-sdw true <<EOF
+--log-folder /tmp/logs --feature-sdw true --password-stdin <<EOF
 ${password}
 EOF
 
