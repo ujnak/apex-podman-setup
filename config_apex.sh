@@ -96,6 +96,7 @@ podman volume create oradata
 podman volume create ords_config
 
 # Create pod and containers.
+echo "May take some time if Oracle Database Free or ORDS container image is not latest."
 podman kube play apex.yaml
 sleep 10
 podman exec -i apex-db /home/oracle/setPassword.sh ${password}
