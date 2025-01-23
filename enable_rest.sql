@@ -11,7 +11,7 @@ begin
         p_enabled => true
         ,p_schema => 'WKSP_&WKSPNAME'
         ,p_url_mapping_type => 'BASE_PATH'
-        ,p_url_mapping_pattern => '&WKSPNAME'
+        ,p_url_mapping_pattern => lower('&WKSPNAME')
         ,p_auto_rest_auth => true
      );
      commit;
