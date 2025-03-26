@@ -6,7 +6,7 @@
 # Usage: config_apex.sh <DB SYS Password> <APEX ADMIN Password>
 #
 # - macOS Sonoma and Sequoia
-# - podman 5.2.4
+# - podman 5.4.1
 # - Oracle Databse 23ai Free Container Image. amd64 and arm64
 #     container-registry.oracle.com/database/free:latest
 # - Oracle ORDS Container Image. amd64 and arm64
@@ -102,7 +102,7 @@ sleep 10
 podman exec -i apex-db /home/oracle/setPassword.sh ${password}
 
 # #############################################################################
-# Set WALLT_ROOT to system:
+# Set entire database WALLT_ROOT to system:
 # #############################################################################
 sql sys/${password}@localhost/free as sysdba <<EOF
 alter system set wallet_root = 'system:' scope=both;
