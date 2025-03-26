@@ -105,7 +105,7 @@ podman exec -i apex-db /home/oracle/setPassword.sh ${password}
 # Set entire database WALLT_ROOT to system:
 # #############################################################################
 sql sys/${password}@localhost/free as sysdba <<EOF
-alter system set wallet_root = 'system:' scope=both;
+alter system set wallet_root = 'system:' scope=spfile;
 exit
 EOF
 
