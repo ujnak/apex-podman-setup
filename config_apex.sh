@@ -102,6 +102,14 @@ sleep 10
 podman exec -i apex-db /home/oracle/setPassword.sh ${password}
 
 # #############################################################################
+# Set WALLT_ROOT to system:
+# #############################################################################
+sql sys/${password}@localhost/freee as sysdba <<EOF
+alter system set wallet_root = 'system:' scope=both;
+exit
+EOF
+
+# #############################################################################
 # Install Oracle APEX
 # #############################################################################
 #
