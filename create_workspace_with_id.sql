@@ -50,5 +50,6 @@ apex_util.create_user(
 );
 end;
 /
+    
 commit;
 exit;
