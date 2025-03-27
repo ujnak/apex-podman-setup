@@ -57,7 +57,8 @@ done
 # #############################################################################
 # Update database SYS password and APEX admin password 
 # #############################################################################
-# 1st argument is database SYS password.
+# 1st argument is database SYS password. default is "oracle"
+echo oracle > password.txt 
 if [ $# -ge 1 ]; then
   echo ${1} > password.txt
 fi
