@@ -20,6 +20,10 @@
 #   GraalVM Free Terms and Conditions (GFTC) including License for Early Adopter Versions
 #   https://www.oracle.com/downloads/licenses/graal-free-license.html
 #
+# Change History:
+# 2025-03-27: Change the ORDS installation password from here text to a file.
+# 2025-03-27: Cleanup commands appended.
+#
 # PLEASE Modify: Language resource JAPANESE is installed
 INSTALL_LANGUAGES="JAPANESE"
 
@@ -136,9 +140,7 @@ podman stop apex-ords
 podman run --pod apex --name apex-ords-for-install --rm -i -v ords_config:/etc/ords/config \
 container-registry.oracle.com/database/ords:latest install \
 --admin-user sys --db-hostname localhost --db-port 1521 --db-servicename freepdb1 \
---log-folder /tmp/logs --feature-sdw true --password-stdin <<EOF
-${password}
-EOF
+--log-folder /tmp/logs --feature-sdw true --password-stdin < password.txt
 
 podman run --pod apex --name apex-ords-for-config --rm -v ords_config:/etc/ords/config \
 container-registry.oracle.com/database/ords:latest \
@@ -150,5 +152,12 @@ config set standalone.http.port 8181
 #
 podman pod stop apex
 podman pod start apex
+
+# #############################################################################
+# Clearn up
+# #############################################################################
+podman stop apex-ords-for-config
+podman stop apex-ords-for-install
+rm -f password.txt
 
 # end.
