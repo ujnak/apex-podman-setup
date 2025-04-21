@@ -6,7 +6,7 @@
 # Usage: config_apex.sh <DB SYS Password> <APEX ADMIN Password>
 #
 # - macOS Sonoma and Sequoia
-# - podman 5.4.1
+# - podman 5.4.2
 # - Oracle Databse 23ai Free Container Image. amd64 and arm64
 #     container-registry.oracle.com/database/free:latest
 # - Oracle ORDS Container Image. amd64 and arm64
@@ -21,11 +21,16 @@
 #   https://www.oracle.com/downloads/licenses/graal-free-license.html
 #
 # Change History:
+# 2025-04-21: Remove ORDS container explicitly after install and config.
 # 2025-03-27: Change the ORDS installation password from here text to a file.
 # 2025-03-27: Cleanup commands appended.
 #
 # PLEASE Modify: Language resource JAPANESE is installed
 INSTALL_LANGUAGES="JAPANESE"
+
+# The container version is usually set to “latest,” 
+# If ORDS_VERSION is modified, apex.yaml should be updated accordingly.
+ORDS_VERSION="ords:latest"
 
 # #############################################################################
 # Verify pre-requisits.
@@ -138,27 +143,26 @@ fi
 # #############################################################################
 #
 podman stop apex-ords
-podman run --pod apex --name apex-ords-for-install --rm -i -v ords_config:/etc/ords/config \
-container-registry.oracle.com/database/ords:latest install \
---admin-user sys --db-hostname localhost --db-port 1521 --db-servicename freepdb1 \
+podman run --pod apex --name apex-ords-for-install -i -v ords_config:/etc/ords/config \
+container-registry.oracle.com/database/${ORDS_VERSION} --config /etc/ords/config \
+install --admin-user sys --db-hostname localhost --db-port 1521 --db-servicename freepdb1 \
 --log-folder /tmp/logs --feature-sdw true --password-stdin < password.txt
+podman rm -f apex-ords-for-install
 
-podman run --pod apex --name apex-ords-for-config --rm -v ords_config:/etc/ords/config \
-container-registry.oracle.com/database/ords:latest \
+podman run --pod apex --name apex-ords-for-config -v ords_config:/etc/ords/config \
+container-registry.oracle.com/database/${ORDS_VERSION} --config /etc/ords/config \
 config set standalone.http.port 8181
+podman rm -f apex-ords-for-config
 
 # #############################################################################
 # Restart Pod APEX
 # #############################################################################
 #
-podman pod stop apex
-podman pod start apex
+podman pod restart apex
 
 # #############################################################################
 # Clearn up
 # #############################################################################
-podman stop apex-ords-for-config
-podman stop apex-ords-for-install
 rm -f password.txt
 
 # end.
