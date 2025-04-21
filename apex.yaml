@@ -44,4 +44,3 @@ spec:
   - name: oradata-pvc
     persistentVolumeClaim:
       claimName: oradata
-
