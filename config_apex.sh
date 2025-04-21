@@ -140,18 +140,17 @@ fi
 
 # #############################################################################
 # Configure ORDS
-# CAUTION: --config should not be suppliied, 
-#    without --config warned on ARM64 but failed on AMD64 
-#    because --config assigned twice.
 # #############################################################################
 #
 podman stop apex-ords
-podman run --pod apex --name apex-ords-for-install -i -v ords_config:/etc/ords/config \
+podman run --pod apex --name apex-ords-for-install -i -e JAVA_TOOL_OPTIONS="-XX:UseSVE=0" \
+-v ords_config:/etc/ords/config \
 container-registry.oracle.com/database/${ORDS_VERSION} \
 install --admin-user sys --db-hostname localhost --db-port 1521 --db-servicename freepdb1 \
 --log-folder /tmp/logs --feature-sdw true --password-stdin < password.txt
 
-podman run --pod apex --name apex-ords-for-config -v ords_config:/etc/ords/config \
+podman run --pod apex --name apex-ords-for-config -e JAVA_TOOL_OPTIONS="-XX:UseSVE=0" \
+-v ords_config:/etc/ords/config \
 container-registry.oracle.com/database/${ORDS_VERSION} \
 config set standalone.http.port 8181
 
