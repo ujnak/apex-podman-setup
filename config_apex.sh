@@ -147,22 +147,25 @@ podman run --pod apex --name apex-ords-for-install -i -v ords_config:/etc/ords/c
 container-registry.oracle.com/database/${ORDS_VERSION} --config /etc/ords/config \
 install --admin-user sys --db-hostname localhost --db-port 1521 --db-servicename freepdb1 \
 --log-folder /tmp/logs --feature-sdw true --password-stdin < password.txt
-podman rm -f apex-ords-for-install
 
 podman run --pod apex --name apex-ords-for-config -v ords_config:/etc/ords/config \
 container-registry.oracle.com/database/${ORDS_VERSION} --config /etc/ords/config \
 config set standalone.http.port 8181
-podman rm -f apex-ords-for-config
 
 # #############################################################################
 # Restart Pod APEX
 # #############################################################################
 #
-podman pod restart apex
+podman pod stop apex
+podman pod start apex
 
 # #############################################################################
 # Clearn up
 # #############################################################################
+podman stop --time 30 apex-ords-for-install
+podman rm --force apex-ords-for-install
+podman stop --time 30 apex-ords-for-config
+podman rm --force apex-ords-for-config
 rm -f password.txt
 
 # end.
