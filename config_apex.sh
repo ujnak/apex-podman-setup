@@ -21,6 +21,7 @@
 #   https://www.oracle.com/downloads/licenses/graal-free-license.html
 #
 # Change History:
+# 2025-04-22: add JAVA_TOOL_OPTIONS="-XX:UseSVE=0" for workaround of graal issue #10458.
 # 2025-04-21: Remove ORDS container explicitly after install and config.
 # 2025-03-27: Change the ORDS installation password from here text to a file.
 # 2025-03-27: Cleanup commands appended.
