@@ -1,46 +1,52 @@
-# Save the output of this file and use kubectl create -f to import
-# it into Kubernetes.
-#
+# Pod definition for Oracle APEX and ORDS using Podman
 # Created with podman-5.3.1
+#
+# Change Log:
+# 2025/05/01 - Formatted the output for better readability.
+#
 apiVersion: v1
 kind: Pod
 metadata:
+  name: apex
   labels:
     app: apex
-  name: apex
+
 spec:
-  containers:
-  - image: container-registry.oracle.com/database/free:latest
-    name: db
-    ports:
-    - containerPort: 1521
-      hostPort: 1521
-    - containerPort: 8181
-      hostPort: 8181
-    - containerPort: 8443
-      hostPort: 8443
-    - containerPort: 27017
-      hostPort: 27017
-    securityContext: {}
-    volumeMounts:
-    - mountPath: /opt/oracle/oradata
-      name: oradata-pvc
-  - args:
-    - serve
-    env:
-    - name: JAVA_TOOL_OPTIONS
-      value: -XX:UseSVE=0
-    image: container-registry.oracle.com/database/ords:latest
-    name: ords
-    securityContext: {}
-    volumeMounts:
-    - mountPath: /etc/ords/config
-      name: ords_config-pvc
   restartPolicy: Always
+
+  containers:
+    - name: db
+      image: container-registry.oracle.com/database/free:latest
+      ports:
+        - containerPort: 1521
+          hostPort: 1521
+        - containerPort: 8181
+          hostPort: 8181
+        - containerPort: 8443
+          hostPort: 8443
+        - containerPort: 27017
+          hostPort: 27017
+      volumeMounts:
+        - name: oradata-pvc
+          mountPath: /opt/oracle/oradata
+      securityContext: {}
+
+    - name: ords
+      image: container-registry.oracle.com/database/ords:latest
+      args: [ "serve" ]
+      env:
+        - name: JAVA_TOOL_OPTIONS
+          value: -XX:UseSVE=0
+      volumeMounts:
+        - name: ords_config-pvc
+          mountPath: /etc/ords/config
+      securityContext: {}
+
   volumes:
-  - name: ords_config-pvc
-    persistentVolumeClaim:
-      claimName: ords_config
-  - name: oradata-pvc
-    persistentVolumeClaim:
-      claimName: oradata
+    - name: oradata-pvc
+      persistentVolumeClaim:
+        claimName: oradata
+
+    - name: ords_config-pvc
+      persistentVolumeClaim:
+        claimName: ords_config
