@@ -21,6 +21,7 @@
 #   https://www.oracle.com/downloads/licenses/graal-free-license.html
 #
 # Change History:
+# 2025/05/07: mapping port 8080 to 8181 by apex.yaml, remove config command of ords.
 # 2025/05/07: remove JAVA_TOOL_OPTIONS="-XX:UseSVE=0", ORDS image includes this workaround.
 # 2025/04/22: add JAVA_TOOL_OPTIONS="-XX:UseSVE=0" for workaround of graal issue #10458.
 # 2025/04/21: Remove ORDS container explicitly after install and config.
@@ -151,11 +152,6 @@ container-registry.oracle.com/database/${ORDS_VERSION} \
 install --admin-user sys --db-hostname localhost --db-port 1521 --db-servicename freepdb1 \
 --log-folder /tmp/logs --feature-sdw true --password-stdin < password.txt
 
-podman run --pod apex --name apex-ords-for-config \
--v ords_config:/etc/ords/config \
-container-registry.oracle.com/database/${ORDS_VERSION} \
-config set standalone.http.port 8181
-
 # #############################################################################
 # Restart Pod APEX
 # #############################################################################
@@ -168,8 +164,6 @@ podman pod start apex
 # #############################################################################
 podman stop --time 30 apex-ords-for-install
 podman rm --force apex-ords-for-install
-podman stop --time 30 apex-ords-for-config
-podman rm --force apex-ords-for-config
 rm -f password.txt
 
 # end.
