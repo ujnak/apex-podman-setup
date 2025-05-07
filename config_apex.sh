@@ -21,10 +21,11 @@
 #   https://www.oracle.com/downloads/licenses/graal-free-license.html
 #
 # Change History:
-# 2025-04-22: add JAVA_TOOL_OPTIONS="-XX:UseSVE=0" for workaround of graal issue #10458.
-# 2025-04-21: Remove ORDS container explicitly after install and config.
-# 2025-03-27: Change the ORDS installation password from here text to a file.
-# 2025-03-27: Cleanup commands appended.
+# 2025/05/07: remove JAVA_TOOL_OPTIONS="-XX:UseSVE=0", ORDS image includes this workaround.
+# 2025/04/22: add JAVA_TOOL_OPTIONS="-XX:UseSVE=0" for workaround of graal issue #10458.
+# 2025/04/21: Remove ORDS container explicitly after install and config.
+# 2025/03/27: Change the ORDS installation password from here text to a file.
+# 2025/03/27: Cleanup commands appended.
 #
 # PLEASE Modify: Language resource JAPANESE is installed
 INSTALL_LANGUAGES="JAPANESE"
@@ -144,13 +145,13 @@ fi
 # #############################################################################
 #
 podman stop apex-ords
-podman run --pod apex --name apex-ords-for-install -i -e JAVA_TOOL_OPTIONS="-XX:UseSVE=0" \
+podman run --pod apex --name apex-ords-for-install -i \
 -v ords_config:/etc/ords/config \
 container-registry.oracle.com/database/${ORDS_VERSION} \
 install --admin-user sys --db-hostname localhost --db-port 1521 --db-servicename freepdb1 \
 --log-folder /tmp/logs --feature-sdw true --password-stdin < password.txt
 
-podman run --pod apex --name apex-ords-for-config -e JAVA_TOOL_OPTIONS="-XX:UseSVE=0" \
+podman run --pod apex --name apex-ords-for-config \
 -v ords_config:/etc/ords/config \
 container-registry.oracle.com/database/${ORDS_VERSION} \
 config set standalone.http.port 8181
