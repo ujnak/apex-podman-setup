@@ -1,0 +1,60 @@
+# Pod definition for Oracle APEX and ORDS using Podman
+# Created with podman-5.3.1
+#
+# Change Log:
+# 2025/05/07: mapping port 8080 to 8181 by apex.yaml, remove config command of ords.
+# 2025/05/07: remove JAVA_TOOL_OPTIONS. latest ORDS image includes workaroud.
+# 2025/05/01: Formatted the output for better readability.
+#
+apiVersion: v1
+kind: Pod
+metadata:
+  name: apex
+  labels:
+    app: apex
+
+spec:
+  restartPolicy: Always
+
+  containers:
+    - name: db
+      image: container-registry.oracle.com/database/free:latest
+      ports:
+        - containerPort: 1521
+          hostPort: 1521
+        - containerPort: 8080
+          hostPort: 8181
+        - containerPort: 8443
+          hostPort: 8443
+        - containerPort: 27017
+          hostPort: 27017
+      volumeMounts:
+        - name: oradata-pvc
+          mountPath: /opt/oracle/oradata
+        - name: apex-volume
+          mountPath: /opt/oracle/apex
+      securityContext: {}
+
+    - name: ords
+      image: container-registry.oracle.com/database/ords:latest
+      args: [ "serve" ]
+      volumeMounts:
+        - name: ords_config-pvc
+          mountPath: /etc/ords/config
+        - name: apex-volume
+          mountPath: /opt/oracle/apex
+      securityContext: {}
+
+  volumes:
+    - name: oradata-pvc
+      persistentVolumeClaim:
+        claimName: oradata
+
+    - name: ords_config-pvc
+      persistentVolumeClaim:
+        claimName: ords_config
+
+    - name: apex-volume
+      hostPath:
+        path: ${PWD}/apex
+        type: Directory
