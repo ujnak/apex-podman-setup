@@ -28,15 +28,14 @@ sql sys/<SYS password>@localhost/freepdb1 as sysdba @create_workspace_with_id \
 ## Step 3: Apply PSR (Patch Set Release)
 
 ```bash
+cd apex
 unzip pAPEXPATCH_VER.zip
-cd PATCHNUMBER
-sql sys/<SYS password>@localhost/freepdb as sysdba
+podman exec -it apex-db sh
+cd /opt/oracle/apex/PATCHNUMBER
+cp -rf images ..
+export NLS_LANG=American_America.AL32UTF8
+sqlplus / as sysdba
+alter session set container=FREEPDB1;
 SQL> @catpatch
 SQL> exit;
-```
-
-## Step 4: Run after applying the patch
-
-```bash
-sql sys/<SYS password>@localhost/freepdb1 as sysdba @config_apex_cdn <apex version including minor version, i.e. 24.2.5>
 ```

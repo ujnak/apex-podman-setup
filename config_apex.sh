@@ -6,7 +6,7 @@
 # Usage: config_apex.sh <DB SYS Password> <APEX ADMIN Password>
 #
 # - macOS Sonoma and Sequoia
-# - podman 5.4.2
+# - podman 5.5.0
 # - Oracle Databse 23ai Free Container Image. amd64 and arm64
 #     container-registry.oracle.com/database/free:latest
 # - Oracle ORDS Container Image. amd64 and arm64
@@ -21,6 +21,7 @@
 #   https://www.oracle.com/downloads/licenses/graal-free-license.html
 #
 # Change History:
+# 2025/05/22: use sqlplus in db container to install apex insted of SQLcl.
 # 2025/05/07: mapping port 8080 to 8181 by apex.yaml, remove config command of ords.
 # 2025/05/07: remove JAVA_TOOL_OPTIONS="-XX:UseSVE=0", ORDS image includes this workaround.
 # 2025/04/22: add JAVA_TOOL_OPTIONS="-XX:UseSVE=0" for workaround of graal issue #10458.
@@ -31,27 +32,9 @@
 # PLEASE Modify: Language resource JAPANESE is installed
 INSTALL_LANGUAGES="JAPANESE"
 
-# The container version is usually set to “latest,” 
-# If ORDS_VERSION is modified, apex.yaml should be updated accordingly.
-ORDS_VERSION="ords:latest"
-
 # #############################################################################
 # Verify pre-requisits.
 # #############################################################################
-# Confirm podman is available.
-which podman
-if [ $? -ne 0 ]; then
-  echo "podman is not installed or not accesible, exit";
-  exit;
-fi
-
-# Confirm SQLcl - sql is available.
-which sql
-if [ $? -ne 0 ]; then
-  echo "SQLcl is not installed or not accessible, exit";
-  exit;
-fi
-
 # Confirm podman volume oradata and ords_config are not exists.
 for vol in oradata ords_config
 do
@@ -66,9 +49,9 @@ done
 # Update database SYS password and APEX admin password 
 # #############################################################################
 # 1st argument is database SYS password. default is "oracle"
-echo oracle > password.txt 
+SYS_PASSWORD="oracle";
 if [ $# -ge 1 ]; then
-  echo ${1} > password.txt
+  SYS_PASSWORD=${1}
 fi
 # 2nd argument is APEX Admin password.
 ADMIN_PASSWORD="Welcome_1";
@@ -79,10 +62,12 @@ fi
 # #############################################################################
 # Replace Oracle APEX by the latest archive.
 # #############################################################################
-#
+# skip if directory apex exists.
+if [ ! -d ./apex ]; then
 rm -rf apex META-INF
 curl -OL https://download.oracle.com/otn_software/apex/apex-latest.zip
 unzip apex-latest.zip > /dev/null
+fi
 
 # #############################################################################
 # Find APEX version and schema of apex-latest.zip
@@ -101,56 +86,62 @@ echo "APEX VERSION detected: " ${APEX_VERSION} ${APEX_SCHEMA}
 # #############################################################################
 # Create Pod APEX with Oracle Database Free container and ORDS container.
 # #############################################################################
-#
-password=`cat password.txt`
-
 # Prepare podman volumes
 podman volume create oradata
 podman volume create ords_config
 
 # Create pod and containers.
 echo "May take some time if Oracle Database Free or ORDS container image is not latest."
+# only current directory should be substituted.
+envsubst < apex.yaml.template > apex.yaml
 podman kube play apex.yaml
 sleep 10
-podman exec -i apex-db /home/oracle/setPassword.sh ${password}
+podman exec -i apex-db /home/oracle/setPassword.sh ${SYS_PASSWORD}
 
 # #############################################################################
 # Install Oracle APEX
 # #############################################################################
 #
-cd apex
-sql sys/${password}@localhost/freepdb1 as sysdba <<EOF
+podman exec -i apex-db sh <<__EOF__
+cd /opt/oracle/apex
+export NLS_LANG=American_America.AL32UTF8
+sqlplus / as sysdba
+alter session set container=FREEPDB1;
 @apexins SYSAUX SYSAUX TEMP /i/
 alter user apex_public_user account unlock no authentication;
-exit
-EOF
-
-# setup admin account, image path and network acl
-cd ..
-sql sys/${password}@localhost/freepdb1 as sysdba @config_apex_admin ${ADMIN_PASSWORD}
-sql sys/${password}@localhost/freepdb1 as sysdba @config_apex_cdn ${APEX_VERSION}
-sql sys/${password}@localhost/freepdb1 as sysdba @config_apex_acl ${APEX_SCHEMA}
-
-# load language resources if specified
-if [ ! -z "${INSTALL_LANGUAGES}" ]; then
-cd apex
-sql sys/${password}@localhost/freepdb1 as sysdba <<EOF
+begin
+    apex_instance_admin.create_or_update_admin_user(
+        p_username => 'ADMIN',
+        p_email    => null,
+        p_password => '${ADMIN_PASSWORD}'
+    );
+    commit;
+end;
+/
+begin
+    dbms_network_acl_admin.append_host_ace(
+        host => '*',
+        ace => xs\$ace_type(
+            privilege_list => xs\$name_list('http','http_proxy'),
+            principal_name => upper('${APEX_SCHEMA}'),
+            principal_type => xs_acl.ptype_db
+        )
+    );
+    commit;
+end;
+/
 @load_trans ${INSTALL_LANGUAGES}
-exit
-EOF
-cd ..
-fi
+exit;
+__EOF__
 
 # #############################################################################
 # Configure ORDS
 # #############################################################################
 #
-podman stop apex-ords
-podman run --pod apex --name apex-ords-for-install -i \
--v ords_config:/etc/ords/config \
-container-registry.oracle.com/database/${ORDS_VERSION} \
-install --admin-user sys --db-hostname localhost --db-port 1521 --db-servicename freepdb1 \
---log-folder /tmp/logs --feature-sdw true --password-stdin < password.txt
+podman exec -i apex-ords sh <<__EOF__
+echo ${SYS_PASSWORD} | ords --config /etc/ords/config install --admin-user sys --db-hostname localhost --db-port 1521 --db-servicename freepdb1 --log-folder /tmp/logs --feature-sdw true --password-stdin
+ords --config /etc/ords/config config set standalone.static.path /opt/oracle/apex/images
+__EOF__
 
 # #############################################################################
 # Restart Pod APEX
@@ -158,12 +149,5 @@ install --admin-user sys --db-hostname localhost --db-port 1521 --db-servicename
 #
 podman pod stop apex
 podman pod start apex
-
-# #############################################################################
-# Clearn up
-# #############################################################################
-podman stop --time 30 apex-ords-for-install
-podman rm --force apex-ords-for-install
-rm -f password.txt
 
 # end.
