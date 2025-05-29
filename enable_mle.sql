@@ -1,8 +1,9 @@
 #!/bin/sh
 # enable MultiLingual Engine
+# sqlplus sys@localhost/pdb as sysdba
+# usage: @enable_mle <workspace_schema>
 
-WORKSPACE_SCHEMA=${1}
-
-grant execute on javascript to ${WORKSPACE_SCHEMA};
-grant execute dynamic mle to ${WORKSPACE_SCHEMA};
-grant create mle to ${WORKSPACE_SCHEMA};
+grant execute on javascript to &1;
+grant execute dynamic mle to &1};
+grant create mle to &1;
+exit
