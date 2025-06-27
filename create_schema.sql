@@ -3,7 +3,7 @@ set echo on
 define SCHEMA = &1
 
 -- create database user for apex parsing sdchema on Oracle Database Free
-create user &SCHEMA default tablespace users temporary tablespace temp quota unlimited on users;
+create user if not exists &SCHEMA default tablespace users temporary tablespace temp quota unlimited on users;
 
 begin
 -- grant required role for apex to the schema. 
@@ -16,4 +16,3 @@ loop
 end loop;
 end;
 /
-exit;
