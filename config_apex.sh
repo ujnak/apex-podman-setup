@@ -32,6 +32,10 @@
 # PLEASE Modify: Language resource JAPANESE is installed
 INSTALL_LANGUAGES="JAPANESE"
 
+if [ -z "${ORDS_VERSION}" ]; then
+    export ORDS_VERSION="latest"
+fi
+
 # #############################################################################
 # Verify pre-requisits.
 # #############################################################################
