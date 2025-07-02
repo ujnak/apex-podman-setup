@@ -21,6 +21,7 @@
 #   https://www.oracle.com/downloads/licenses/graal-free-license.html
 #
 # Change History:
+# 2025/07/02: choose ORDS container version by variable ORDS_VERSION.
 # 2025/05/22: use sqlplus in db container to install apex insted of SQLcl.
 # 2025/05/07: mapping port 8080 to 8181 by apex.yaml, remove config command of ords.
 # 2025/05/07: remove JAVA_TOOL_OPTIONS="-XX:UseSVE=0", ORDS image includes this workaround.
