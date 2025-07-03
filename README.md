@@ -70,7 +70,7 @@ podman exec -it apex-db bash
 export PYTHONPATH=$ORACLE_HOME/oml4py/modules
 python3
 import oml
-oml.connect(user='wksp_apexdev',password='password',port=1521,host='localhost',service_name='freepdb1')
+oml.connect(user='WKSP_APEXDEV',password='********',port=1521,host='localhost',service_name='freepdb1')
 oml.script.create("TEST", func='def func():return 1 + 1', overwrite=True)
 res = oml.do_eval(func='TEST')
 res
@@ -83,7 +83,7 @@ oml.script.drop("TEST")
 export LD_LIBRARY_PATH=$ORACLE_HOME/lib:$LD_LIBRARY_PATH
 ORE
 library(ORE)
-ore.connect("OMLUSER", password="パスワード", service_name="FREEPDB1", host="localhost", all=TRUE)
+ore.connect("WKSP_APEXDEV", password="********", service_name="FREEPDB1", host="localhost", all=TRUE)
 ```
 ```
 ## Is the OML4R client connected to the OML4R server?
