@@ -52,5 +52,46 @@ grant create mining model to <schema>
 grant db_developer_role   to <schema>
 grant pyqadmin            to <schema> -- for OML4Py
 grant rqadmin             to <schema> -- for OML4R
-grant oml_developer       to <schema> -- for ADB ?
+grant oml_developer       to <schema> -- for ADB
 ```
+
+## verify installaing 
+
+# OML4Py Server
+
+podman exec -it apex-db bash
+. work/oml/oml4py.env
+export PYTHONPATH=$ORACLE_HOME/oml4py/modules
+python3
+import oml
+oml.connect(user='wksp_apexdev',password='password',port=1521,host='localhost',service_name='freepdb1')
+oml.script.create("TEST", func='def func():return 1 + 1', overwrite=True)
+res = oml.do_eval(func='TEST')
+res
+oml.script.drop("TEST")
+
+# OML4R Server
+export LD_LIBRARY_PATH=$ORACLE_HOME/lib:$LD_LIBRARY_PATH
+ORE
+library(ORE)
+ore.connect("OMLUSER", password="パスワード", service_name="FREEPDB1", host="localhost", all=TRUE)
+
+## Is the OML4R client connected to the OML4R server?
+## The output of this function should be TRUE.
+ore.is.connected()
+
+## List the available database tables.
+ore.ls()
+
+## Push an R dataframe to a database table.
+df <- data.frame(a="abc",
+                b=1.456,
+                c=TRUE,
+                d=as.integer(1))
+of <- ore.push(df)
+
+## Run the self-contained example code in the help files associated with the following functions.
+## The examples should not return any errors.
+example("ore.odmAI")     ## Builds an OML4SQL attribute importance model.
+example("ore.doEval")    ## Runs an embedded R execution function.
+
