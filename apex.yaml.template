@@ -18,7 +18,7 @@ spec:
 
   containers:
     - name: db
-      image: container-registry.oracle.com/database/free:latest
+      image: container-registry.oracle.com/database/free:${CI_DB_VERSION}
       ports:
         - containerPort: 1521
           hostPort: 1521
@@ -33,10 +33,12 @@ spec:
           mountPath: /opt/oracle/oradata
         - name: apex-volume
           mountPath: /opt/oracle/apex
+        - name: home-volume
+          mountPath: /home/oracle/work
       securityContext: {}
 
     - name: ords
-      image: container-registry.oracle.com/database/ords:${ORDS_VERSION}
+      image: container-registry.oracle.com/database/ords:${CI_ORDS_VERSION}
       args: [ "serve" ]
       volumeMounts:
         - name: ords_config-pvc
@@ -49,12 +51,14 @@ spec:
     - name: oradata-pvc
       persistentVolumeClaim:
         claimName: oradata
-
     - name: ords_config-pvc
       persistentVolumeClaim:
         claimName: ords_config
-
     - name: apex-volume
       hostPath:
         path: ${PWD}/apex
+        type: Directory
+    - name: home-volume
+      hostPath:
+        path: ${PWD}
         type: Directory

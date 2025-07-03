@@ -33,6 +33,8 @@ spec:
           mountPath: /opt/oracle/oradata
         - name: apex-volume
           mountPath: /opt/oracle/apex
+        - name: home-volume
+          mountPath: /home/oracle/work
       securityContext: {}
 
     - name: ords
@@ -49,12 +51,14 @@ spec:
     - name: oradata-pvc
       persistentVolumeClaim:
         claimName: oradata
-
     - name: ords_config-pvc
       persistentVolumeClaim:
         claimName: ords_config
-
     - name: apex-volume
       hostPath:
         path: /Users/ynakakoshi/Documents/apex-podman-setup/apex
+        type: Directory
+    - name: home-volume
+      hostPath:
+        path: /Users/ynakakoshi/Documents/apex-podman-setup
         type: Directory

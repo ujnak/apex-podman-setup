@@ -21,7 +21,7 @@
 #   https://www.oracle.com/downloads/licenses/graal-free-license.html
 #
 # Change History:
-# 2025/07/02: choose ORDS container version by variable ORDS_VERSION.
+# 2025/07/03: CI_DB_VERSION and CI_ORDS_VERSION to choose the version of container image.
 # 2025/05/22: use sqlplus in db container to install apex insted of SQLcl.
 # 2025/05/07: mapping port 8080 to 8181 by apex.yaml, remove config command of ords.
 # 2025/05/07: remove JAVA_TOOL_OPTIONS="-XX:UseSVE=0", ORDS image includes this workaround.
@@ -33,8 +33,27 @@
 # PLEASE Modify: Language resource JAPANESE is installed
 INSTALL_LANGUAGES="JAPANESE"
 
-if [ -z "${ORDS_VERSION}" ]; then
-    export ORDS_VERSION="latest"
+# prepare the container image for database free.
+if [ -z "${CI_DB_VERSION}" ]; then
+    export CI_DB_VERSION="latest"
+fi
+echo DB container image is ${CI_DB_VERSION}.
+# pull container image
+podman pull container-registry.oracle.com/database/free:${CI_DB_VERSION}
+if [ $? -ne 0 ]; then
+    echo failed to pull the container image of the database, exit.
+    exit 1
+fi
+
+# prepare the container image for ords.
+if [ -z "${CI_ORDS_VERSION}" ]; then
+    export CI_ORDS_VERSION="latest"
+fi
+echo ORDS container image is ${CI_DB_VERSION}.
+podman pull container-registry.oracle.com/database/ords:${CI_ORDS_VERSION}
+if [ $? -ne 0 ]; then
+    echo failed to pull the container image of the ords, exit.
+    exit 1
 fi
 
 # #############################################################################
