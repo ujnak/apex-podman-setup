@@ -50,7 +50,7 @@ podman exec apex-db sh work/config_oml4r.sh
 ```
 grant create mining model to <schema>
 grant db_developer_role   to <schema>
-grant pyqadmin            to <schema> -- OML4Py only
-grant rqadmin             to <schema> -- OML4R  only
-grant oml_developer       to <schema> -- ADB only?
+grant pyqadmin            to <schema> -- for OML4Py
+grant rqadmin             to <schema> -- for OML4R
+grant oml_developer       to <schema> -- for ADB ?
 ```
