@@ -66,7 +66,7 @@ grant execute on ctx_ddl  to <schema> -- to support text analysis
 
 ```
 podman exec -it apex-db bash
-. work/oml/oml4py.env
+. work/oml4py.env
 export PYTHONPATH=$ORACLE_HOME/oml4py/modules
 python3
 import oml
