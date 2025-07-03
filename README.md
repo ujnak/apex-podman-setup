@@ -58,8 +58,9 @@ grant execute on ctx_ddl  to <schema> -- to support text analysis
 
 ## verify installaing 
 
-# OML4Py Server
+### OML4Py Server
 
+```
 podman exec -it apex-db bash
 . work/oml/oml4py.env
 export PYTHONPATH=$ORACLE_HOME/oml4py/modules
@@ -70,13 +71,17 @@ oml.script.create("TEST", func='def func():return 1 + 1', overwrite=True)
 res = oml.do_eval(func='TEST')
 res
 oml.script.drop("TEST")
+```
 
-# OML4R Server
+### OML4R Server
+
+```
 export LD_LIBRARY_PATH=$ORACLE_HOME/lib:$LD_LIBRARY_PATH
 ORE
 library(ORE)
 ore.connect("OMLUSER", password="パスワード", service_name="FREEPDB1", host="localhost", all=TRUE)
-
+```
+```
 ## Is the OML4R client connected to the OML4R server?
 ## The output of this function should be TRUE.
 ore.is.connected()
@@ -95,4 +100,4 @@ of <- ore.push(df)
 ## The examples should not return any errors.
 example("ore.odmAI")     ## Builds an OML4SQL attribute importance model.
 example("ore.doEval")    ## Runs an embedded R execution function.
-
+```
