@@ -53,6 +53,7 @@ grant db_developer_role   to <schema>
 grant pyqadmin            to <schema> -- for OML4Py
 grant rqadmin             to <schema> -- for OML4R
 grant oml_developer       to <schema> -- for ADB
+grant execute on ctx_ddl  to <schema> -- to support text analysis
 ```
 
 ## verify installaing 
