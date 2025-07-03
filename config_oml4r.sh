@@ -11,7 +11,9 @@
 # https://docs.oracle.com/en/database/oracle/machine-learning/oml4r/2.0.0-23ai/oread/index.html
 #
 
+######################################################################
 # 3.2.1 Install Oracle R Distribution on Oracle Linux 8 Using Dnf
+######################################################################
 
 # check OML4R supporting packages medium for OML4R 2.0
 if [ ! -f ~/work/oml/oml4r-supporting-linux-x86-64-2.0.zip ]; then
@@ -29,21 +31,21 @@ su -c "yum-config-manager --enable ol8_codeready_builder"
 su -c "yum-config-manager --enable ol8_addons"
 su -c "dnf -y install R-4.0.5 cairo-devel"
 
+######################################################################
 # 4.3 Install Oracle Machine Learning for R Server for Oracle Database 23ai
+######################################################################
 
 cd $ORACLE_HOME/R/server
 sqlplus / as sysdba <<EOF
-spool install_root.txt
-show con_name
 @rqcfg.sql SYSAUX TEMP /opt/oracle/product/23ai/dbhomeFree /usr/lib64/R
 alter session set container = FREEPDB1;
-spool install_pdb.txt
-show con_name
 @rqcfg.sql SYSAUX TEMP /opt/oracle/product/23ai/dbhomeFree /usr/lib64/R
 exit
 EOF
 
+######################################################################
 # 6.4.1 Install the Supporting Packages on Linux
+######################################################################
 
 cd ~/work/oml
 if [ ! -d supporting ]; then
