@@ -34,14 +34,23 @@ sh apply_path.sh
 ```
 
 ## Additional Setup: OML4Py 2.1 Server and Client on apex-db (x86-64 only)
+
+```bash
 podman exec apex-db sh work/config_oml4py.sh
+```
 
 ## Additional Setup: OML4R 2.0 Server on apex-db (x86-64 only)
+
+```
 podman exec apex-db sh work/config_oml4r.sh
+```
 
 ## grant roles to APEX workspace schema
+
+```
 grant create mining model to <schema>
 grant db_developer_role   to <schema>
 grant pyqadmin            to <schema> -- OML4Py only
 grant rqadmin             to <schema> -- OML4R  only
 grant oml_developer       to <schema> -- ADB only?
+```
