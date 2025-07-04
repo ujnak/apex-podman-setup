@@ -38,7 +38,7 @@ su -c "dnf -y install R-4.0.5 cairo-devel"
 # ATTN: CDB excluded because it should work only on PDB.
 cd $ORACLE_HOME/R/server
 sqlplus / as sysdba <<EOF
--- @rqcfg.sql SYSAUX TEMP /opt/oracle/product/23ai/dbhomeFree /usr/lib64/R
+@rqcfg.sql SYSAUX TEMP /opt/oracle/product/23ai/dbhomeFree /usr/lib64/R
 alter session set container = FREEPDB1;
 @rqcfg.sql SYSAUX TEMP /opt/oracle/product/23ai/dbhomeFree /usr/lib64/R
 exit
