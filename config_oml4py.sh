@@ -99,7 +99,7 @@ export LD_LIBRARY_PATH=$PYTHONHOME/lib:$ORACLE_HOME/lib:$LD_LIBRARY_PATH
 # ATTN: CDB excluded because it should work only on PDB.
 cd $ORACLE_HOME/oml4py/server
 sqlplus / as sysdba <<EOF
--- @pyqcfg.sql SYSAUX TEMP /opt/oracle/product/23ai/dbhomeFree/python
+@pyqcfg.sql SYSAUX TEMP /opt/oracle/product/23ai/dbhomeFree/python
 alter session set container=FREEPDB1;
 @pyqcfg.sql SYSAUX TEMP /opt/oracle/product/23ai/dbhomeFree/python
 exit
