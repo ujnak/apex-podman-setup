@@ -123,7 +123,7 @@ podman exec -i apex-db /home/oracle/setPassword.sh ${SYS_PASSWORD}
 # #############################################################################
 #
 podman exec -i apex-db sh <<__EOF__
-cd /opt/oracle/apex
+cd ~/work/apex
 export NLS_LANG=American_America.AL32UTF8
 sqlplus / as sysdba
 alter session set container=FREEPDB1;

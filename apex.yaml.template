@@ -31,8 +31,6 @@ spec:
       volumeMounts:
         - name: oradata-pvc
           mountPath: /opt/oracle/oradata
-        - name: apex-volume
-          mountPath: /opt/oracle/apex
         - name: home-volume
           mountPath: /home/oracle/work
       securityContext: {}
