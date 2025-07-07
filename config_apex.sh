@@ -37,22 +37,13 @@ INSTALL_LANGUAGES="JAPANESE"
 if [ -z "${CI_DB_VERSION}" ]; then
     export CI_DB_VERSION="latest"
 fi
-# pull container image
-podman pull container-registry.oracle.com/database/free:${CI_DB_VERSION}
-if [ $? -ne 0 ]; then
-    echo failed to pull the container image of the database, exit.
-    exit 1
-fi
+sh 01_pull_database_container_image.sh ${CI_DB_VERSION}|| exit 1
 
 # prepare the container image for ords.
 if [ -z "${CI_ORDS_VERSION}" ]; then
     export CI_ORDS_VERSION="latest"
 fi
-podman pull container-registry.oracle.com/database/ords:${CI_ORDS_VERSION}
-if [ $? -ne 0 ]; then
-    echo failed to pull the container image of the ords, exit.
-    exit 1
-fi
+02_pull_ords_container_image.sh ${CI_ORDS_VERSION} || exit 1
 
 # #############################################################################
 # Verify pre-requisits.
