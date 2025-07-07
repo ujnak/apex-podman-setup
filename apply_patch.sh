@@ -1,7 +1,7 @@
 #!/bin/sh
 podman exec -i apex-db sh <<__EOF__
-cd /opt/oracle/apex/37366599
-cp -rf images ..
+cd ~/work/37366599
+cp -rf images ../apex/ 
 export NLS_LANG=American_America.AL32UTF8
 sqlplus / as sysdba
 alter session set container=freepdb1;
