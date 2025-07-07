@@ -43,7 +43,7 @@ sh 01_pull_database_container_image.sh ${CI_DB_VERSION}|| exit 1
 if [ -z "${CI_ORDS_VERSION}" ]; then
     export CI_ORDS_VERSION="latest"
 fi
-02_pull_ords_container_image.sh ${CI_ORDS_VERSION} || exit 1
+sh 02_pull_ords_container_image.sh ${CI_ORDS_VERSION} || exit 1
 
 # #############################################################################
 # Verify pre-requisits.
