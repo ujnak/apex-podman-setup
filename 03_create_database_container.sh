@@ -9,30 +9,8 @@
 # 2025/07/05: Separated from config_apex.sh
 #
 
-# #############################################################################
-# Set container name
-# #############################################################################
-#
-# 1st argument is the container name
-DB_CONTAINER="apex-db";
-if [ $# -ge 1 ]; then
-  DB_CONTAINER=${1}
-fi
-
-# #############################################################################
-# prepare the container image for database 23ai free.
-# #############################################################################
-#
-if [ -z "${CI_DB_VERSION}" ]; then
-    export CI_DB_VERSION="latest"
-fi
-
-# pull container image
-podman pull container-registry.oracle.com/database/free:${CI_DB_VERSION}
-if [ $? -ne 0 ]; then
-    echo failed to pull the container image of the database, exit.
-    exit 1
-fi
+DB_CONTAINER=$1
+CI_DB_VERSION=$2
 
 # #############################################################################
 # Create podman volume oradata 

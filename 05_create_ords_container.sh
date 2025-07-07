@@ -3,40 +3,15 @@
 # Create ORDS container
 # ############################################################################
 # 
-# Usage: create_ORDS_container.sh <DB SYS Password> <Container Name>
+# Usage: create_ORDS_container.sh <DB SYS Password> <Container Name> <Version>
 #
 # Change History:
 # 2025/07/05: Separated from config_apex.sh
 #
 
-# #############################################################################
-# Evaluate arguments.
-# #############################################################################
-# 1st argument is database sys password.
-SYS_PASSWORD="oracle";
-if [ $# -ge 1 ]; then
-  SYS_PASSWORD=${1}
-fi
-# 2nd arg is ords container name, default is apex-ords
-ORDS_CONTAINER="apex-ords";
-if [ $# -ge 2 ]; then
-  ORDS_CONTAINER=${2}
-fi
-
-# #############################################################################
-# prepare the container image for Oracle REST Data Services.
-# #############################################################################
-#
-if [ -z "${CI_ORDS_VERSION}" ]; then
-    export CI_ORDS_VERSION="latest"
-fi
-
-# pull container image
-podman pull container-registry.oracle.com/database/ords:${CI_ORDS_VERSION}
-if [ $? -ne 0 ]; then
-    echo failed to pull the container image of the ords, exit.
-    exit 1
-fi
+SYS_PASSWORD=$1
+ORDS_CONTAINER=$2
+CI_ORDS_VERSION=$3
 
 # #############################################################################
 # Create podman volume ords_config
@@ -59,4 +34,3 @@ podman run -d --name ${ORDS_CONTAINER} -p 8181:8080 -p 8443:8443 -p 27017:27017 
 # #############################################################################
 # End of script.
 # #############################################################################
-

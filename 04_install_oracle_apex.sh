@@ -1,25 +1,24 @@
 #!/bin/sh
 # ############################################################################
-# Install APEX on the container apex-db
+# Install APEX on the database container.
 # ############################################################################
 #
-# Usage: install_apex.sh <APEX ADMIN Password>
+# Usage: install_oracle_apex.sh <Container Name>  <APEX ADMIN Password>
 #
 # Change History:
 # 2025/07/05: Separated from config_apex.sh
 # 
-TARGET_CONTAINER=apex-db
+# ############################################################################
+# Settings.
+# ############################################################################
 # Language resource.
 INSTALL_LANGUAGES="JAPANESE"
 
-# #############################################################################
+# container to install oracle apex.
+TARGET_CONTAINER=$1
+
 # APEX admin password
-# #############################################################################
-# APEX Admin password.
-ADMIN_PASSWORD="Welcome_1";
-if [ $# -ge 1 ]; then
-  ADMIN_PASSWORD=${1}
-fi
+ADMIN_PASSWORD=$2
 
 # #############################################################################
 # Replace Oracle APEX by the latest archive.
@@ -80,7 +79,6 @@ end;
 @load_trans ${INSTALL_LANGUAGES}
 exit;
 __EOF__
-
 
 # #############################################################################
 # End of APEX instalation.
