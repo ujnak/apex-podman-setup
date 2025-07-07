@@ -21,16 +21,6 @@ TARGET_CONTAINER=$1
 ADMIN_PASSWORD=$2
 
 # #############################################################################
-# Replace Oracle APEX by the latest archive.
-# #############################################################################
-# skip if directory apex exists.
-if [ ! -d ./apex ]; then
-  rm -rf apex META-INF
-  curl -OL https://download.oracle.com/otn_software/apex/apex-latest.zip
-  unzip apex-latest.zip > /dev/null
-fi
-
-# #############################################################################
 # Find APEX version and schema of apex-latest.zip
 # #############################################################################
 # detect APEX version of apex-latest.zip

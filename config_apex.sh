@@ -75,10 +75,12 @@ fi
 
 # #############################################################################
 # Create Pod APEX with Oracle Database Free container and ORDS container.
-# #############################################################################
 # Prepare podman volumes
 podman volume create oradata
 podman volume create ords_config
+
+# Download APEX latest zip.
+sh 04_1_download_oracle_apex.sh
 
 # Create pod and containers.
 envsubst < apex.yaml.template > apex.yaml
@@ -90,7 +92,7 @@ podman exec -i apex-db /home/oracle/setPassword.sh ${SYS_PASSWORD}
 # Install Oracle APEX
 # #############################################################################
 #
-sh 04_install_oracle_apex.sh apex-db ${ADMIN_PASSWORD} || exit 1
+sh 04_2_install_oracle_apex.sh apex-db ${ADMIN_PASSWORD} || exit 1
 
 # #############################################################################
 # Configure ORDS
