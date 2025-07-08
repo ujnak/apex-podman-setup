@@ -38,7 +38,7 @@ sh apply_patch.sh
 To configure OML4Py, oml/Python-3.12.6.tgz and oml/V1048628-01.zip are required.
 
 ```bash
-podman exec apex-db sh work/config_oml4py.sh
+podman exec apex-db ./work/config_oml4py.sh
 ```
 
 ## Additional Setup: OML4R 2.0 Server on apex-db (x86-64 only)
@@ -46,7 +46,7 @@ podman exec apex-db sh work/config_oml4py.sh
 To configure OML4R, oml/oml4r-supporting-linux-x86-64-2.0.zip is required.
 
 ```
-podman exec apex-db sh work/config_oml4r.sh
+podman exec apex-db ./work/config_oml4r.sh
 ```
 
 ## grant roles to APEX workspace schema
