@@ -3,7 +3,7 @@ create user &1 identified by &2 default tablespace users temporary tablespace te
 alter user &1 quota unlimited on users;
 
 -- allow user to create machine learning model.
-grant create mining model to $1;
+grant create mining model to &1;
 -- DB_DEVELOPER_ROLE is available on db23ai.
 grant db_developer_role to &1;
 -- CTX_DDL for Text processing
