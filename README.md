@@ -60,7 +60,7 @@ grant oml_developer       to <schema> -- for ADB
 grant execute on ctx_ddl  to <schema> -- to support text analysis
 ```
 
-## verify installaing 
+## verify install
 
 ### OML4Py Server
 
