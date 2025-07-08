@@ -30,7 +30,7 @@ sql sys/<SYS password>@localhost/freepdb1 as sysdba @create_workspace_with_id \
 Set patch number in the script before execute.
 
 ```bash
-sh apply_path.sh
+sh apply_patch.sh
 ```
 
 ## Additional Setup: OML4Py 2.1 Server and Client on apex-db (x86-64 only)
