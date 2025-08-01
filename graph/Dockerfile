@@ -22,6 +22,21 @@
 #      $ bash build.sh
 #
 # The builder image will be used to uncompress the tar.gz file with the Java Runtime.
+#
+#####################################################################################################
+#
+# NOTE for Oracle Graph Server:
+#
+# 1. Oracle Graph Server archive
+#    https://www.oracle.com/database/graph/downloads.html
+#
+# Place the downloaded oracle-graph-<version>-<arch>.rpm file under **files** directory.
+# Make sure that there is only one file matching the pattern oracle-graph-*.rpm.
+#
+# HISTORY:
+# 2025/08/01 ynakakos initial version.
+#
+#####################################################################################################
 
 FROM oraclelinux:8 as builder
 
@@ -77,15 +92,14 @@ RUN set -eux; \
 # JDK assumes freetype is available
     dnf install -y \
 #        freetype fontconfig \
-        freetype fontconfig unzip numactl gcc libgfortran python3.8 \
+        freetype fontconfig unzip numactl gcc libgfortran python3.11 python3.11-pip \
     ; \
 # For Oracle Graph
     dnf install -y \
         /tmp/oracle-graph-*.rpm ; \
     rm -f /tmp/oracle-graph-*.rpm ; \
-    rm -f /usr/bin/python3 /usr/bin/pip3 ; \
-    ln /usr/bin/python3.8 /usr/bin/python3 ; \
-    ln /usr/bin/pip3.8 /usr/bin/pip3 ; \
+    alternatives --install /usr/bin/python3 python3 /usr/bin/python3.11 1000 ; \
+    alternatives --install /usr/bin/pip3 pip3 /usr/bin/pip3.11 1000 ; \
     pip3 install oracle-graph-client ; \
 # End
     rm -rf /var/cache/dnf; \
