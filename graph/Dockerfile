@@ -98,8 +98,8 @@ RUN set -eux; \
     dnf install -y \
         /tmp/oracle-graph-*.rpm ; \
     rm -f /tmp/oracle-graph-*.rpm ; \
-    alternatives --install /usr/bin/python3 python3 /usr/bin/python3.11 1000 ; \
-    alternatives --install /usr/bin/pip3 pip3 /usr/bin/pip3.11 1000 ; \
+    alternatives --install /usr/bin/python3 python3 /usr/bin/python3.11 20000 ; \
+    alternatives --install /usr/bin/pip3 pip3 /usr/bin/pip3.11 2000 ; \
     pip3 install oracle-graph-client ; \
 # End
     rm -rf /var/cache/dnf; \
