@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 # Create Oracle Database Free Container.
-podman run -d --name apexdb -p 1521:1521 -p 8181:8181 -p 8443:8443 -v `pwd`/setup:/opt/oracle/scripts/setup -v `pwd`/startup:/opt/oracle/scripts/startup container-registry.oracle.com/database/free:latest
+podman run -d --name apexdb -p 1521:1521 -p 8181:8080 -p 8443:8443 -p 27017:27017 -v `pwd`/setup:/opt/oracle/scripts/setup -v `pwd`/startup:/opt/oracle/scripts/startup container-registry.oracle.com/database/free:latest
 sleep 10
 
 # Intall Oracle APEX in the container.

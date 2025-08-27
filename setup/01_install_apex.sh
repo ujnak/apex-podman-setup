@@ -115,7 +115,7 @@ begin
         host => '*',
         ace => xs\$ace_type(
             privilege_list => xs\$name_list('connect'),
-            principal_name => '${APEX_SCHEMA}',
+            principal_name => APEX_APPLICATION.g_flow_schema_owner,
             principal_type => xs_acl.ptype_db
         )
      );
@@ -165,7 +165,6 @@ ords --config ${ORDS_CONF_DIR} config set restEnabledSql.active true
 ords --config ${ORDS_CONF_DIR} config set feature.sdw true
 ords --config ${ORDS_CONF_DIR} config set jdbc.MaxLimit 30
 ords --config ${ORDS_CONF_DIR} config set jdbc.InitialLimit 10
-ords --config ${ORDS_CONF_DIR} config set standalone.http.port 8181
 ords --config ${ORDS_CONF_DIR} config set standalone.static.context.path /i
 ords --config ${ORDS_CONF_DIR} config set standalone.static.path /opt/oracle/apex/${APEX_VERSION}/images
 
