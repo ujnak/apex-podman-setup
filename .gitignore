@@ -7,6 +7,8 @@ afiedt.buf
 patches
 graph/files
 spatial/files
+rdf4j/files
+jena/files
 MIGRATE
 onnx
 ndm_tutorial
