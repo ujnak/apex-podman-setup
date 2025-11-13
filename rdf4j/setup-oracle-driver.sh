@@ -1,5 +1,6 @@
 #!/bin/sh
 
+cd $HOME
 # Install Oracle Driver for RDF4J
 cp /opt/oracle/jar/* /opt/tomcat/webapps/rdf4j-server/WEB-INF/lib/
 cp /opt/oracle/jar/* /opt/tomcat/webapps/rdf4j-workbench/WEB-INF/lib/
