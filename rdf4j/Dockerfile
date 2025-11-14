@@ -143,9 +143,9 @@ ENV JAVA_HOME=/usr/java/jdk-11
 ENV CATALINA_HOME=/opt/tomcat
 ENV ORACLE_HOME=/opt/oracle
 
-ENV PATH $JAVA_HOME/bin:$PATH
+ENV PATH $ORACLE_HOME/bin:$JAVA_HOME/bin:$PATH
 
-# Copy Java, Tomcat and Oracl from the builder image
+# Copy Java, Tomcat and Oracle from the builder image
 COPY --from=builder $JAVA_HOME     $JAVA_HOME
 COPY --from=builder $CATALINA_HOME $CATALINA_HOME
 COPY --from=builder $ORACLE_HOME   $ORACLE_HOME
@@ -175,5 +175,9 @@ COPY context.xml            /root/
 COPY tomcat-users.xml       /root/
 COPY setup-oracle-driver.sh /root/ 
 
+# Expose Tomcat port
+EXPOSE 8080
+
 # start tomcat
+WORKDIR $CATALINA_HOME
 CMD ["/opt/tomcat/bin/catalina.sh","run"]
