@@ -75,6 +75,8 @@ RUN set -eux; \
 # JDK assumes freetype is available
         freetype fontconfig \
         tar unzip \
+# Utilities to work with orardfldr
+        sudo wget \
     ; \
     rm -rf /var/cache/dnf; \
     ln -sfT "$JAVA_HOME" /usr/java/default; \
@@ -87,13 +89,26 @@ RUN set -eux; \
 # -Xshare:dump will create a CDS archive to improve startup in subsequent runs
     java -Xshare:dump;
 
+# setup user/group for Oracle
+RUN groupadd -g 54321 oinstall && \
+    useradd -u 54321 -g 54321 -m -s /bin/bash oracle && \
+    chown -R oracle:oinstall /home/oracle
+
+# Configure sudo without password for oracle user
+RUN echo 'oracle ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers.d/oracle && \
+    chmod 0440 /etc/sudoers.d/oracle
+
 # For integrating the Oracle driver into RDF4J. 
 COPY config-oracle.ttl /opt/oracle-jena/fuseki/run/config.ttl
 COPY shiro.ini         /opt/oracle-jena/fuseki/run/shiro.ini 
+
+# Change ownership of Apache Fuseki 
+RUN chown -R oracle:oinstall $ORACLE_JENA_HOME
 
 # Expose Fuseki port
 EXPOSE 3030
 
 WORKDIR ${ORACLE_JENA_HOME}/fuseki
+USER oracle
 CMD ["sh","fuseki-server"]
 # CMD ["sh"]
