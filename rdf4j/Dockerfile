@@ -155,7 +155,7 @@ RUN set -eux; \
     dnf install -y \
 # JDK assumes freetype is available
         freetype fontconfig \
-        tar unzip \
+        tar unzip wget sudo \
     ; \
     rm -rf /var/cache/dnf; \
     ln -sfT "$JAVA_HOME" /usr/java/default; \
@@ -168,16 +168,31 @@ RUN set -eux; \
 # -Xshare:dump will create a CDS archive to improve startup in subsequent runs
     java -Xshare:dump;
 
+# setup user/group for Oracle
+RUN groupadd -g 54321 oinstall && \
+    useradd -u 54321 -g 54321 -m -s /bin/bash oracle && \
+
+    chown -R oracle:oinstall /home/oracle
+# Configure sudo without password for oracle user
+RUN echo 'oracle ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers.d/oracle && \
+    chmod 0440 /etc/sudoers.d/oracle
+
 # For integrating the Oracle driver into RDF4J. 
-COPY create.xsl             /root/
-COPY create-oracle.xsl      /root/ 
-COPY context.xml            /root/
-COPY tomcat-users.xml       /root/
-COPY setup-oracle-driver.sh /root/ 
+COPY create.xsl             /tmp/
+COPY create-oracle.xsl      /tmp/ 
+COPY context.xml            /tmp/
+COPY tomcat-users.xml       /tmp/
+COPY setup-oracle-driver.sh /tmp/ 
+
+# Chagen ownership of Apache Tomcat and Eclipse RDF4J
+RUN chown -R oracle:oinstall $CATALINA_HOME
+RUN chown -R oracle:oinstall $ORACLE_HOME
 
 # Expose Tomcat port
 EXPOSE 8080
 
 # start tomcat
 WORKDIR $CATALINA_HOME
+USER oracle
 CMD ["/opt/tomcat/bin/catalina.sh","run"]
+# CMD ["sh"]
